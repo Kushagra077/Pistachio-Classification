@@ -73,13 +73,15 @@ elif option == "28 Features":
     st.subheader("Enter values for 28 features")
 
     # Input sliders for the 28 features (excluding Kurtosis_RB)
-    inputs_minmax = [st.slider(f"{feature}", 0.0, 1.0, 0.5) for feature in minmax_features_28 if feature != 'Kurtosis_RB']
+    inputs_minmax = [st.slider(f"{feature}", 0.0, 1.0, 0.5) for feature in minmax_features_28]
     inputs_standard = [st.slider(f"{feature}", 0.0, 1000.0, 500.0) for feature in standard_features_28]
 
     # Fixed value for Kurtosis_RB
     fixed_kurtosis_rb_value = 0.0  # Set this to your desired constant value
-    inputs_minmax.append(fixed_kurtosis_rb_value)  # Append to minmax inputs
-    inputs_standard.append(fixed_kurtosis_rb_value)  # Append to standard inputs (if needed)
+
+    # Append the fixed value to both input lists
+    inputs_minmax[minmax_features_28.index('Kurtosis_RB')] = fixed_kurtosis_rb_value
+    inputs_standard[standard_features_28.index('Eccentricity')] = fixed_kurtosis_rb_value  # Assuming it's the last index
 
     # Scaling input values
     scaled_minmax = minmax_scaler_28.transform([inputs_minmax])
