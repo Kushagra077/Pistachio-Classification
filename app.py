@@ -76,10 +76,12 @@ elif option == "28 Features":
     inputs_minmax = [st.slider(f"{feature}", 0.0, 1.0, 0.5) for feature in minmax_features_28]
     inputs_standard = [st.slider(f"{feature}", 0.0, 1000.0, 500.0) for feature in standard_features_28]
 
-    # Fixed value for Kurtosis_RB
+    # Fixed value for Kurtosis_RB (change this as necessary)
     fixed_kurtosis_rb_value = 0.0  # Change this to your desired constant value
 
     # Ensure we are appending the fixed value correctly
+    # Kurtosis_RB should already be in your input list as it's part of minmax_features_28
+    # If you want to exclude it, make sure it's properly adjusted in the lists used for scalers
     inputs_minmax.append(fixed_kurtosis_rb_value)  # Append for minmax input
     inputs_standard.append(fixed_kurtosis_rb_value)  # Append for standard input
 
@@ -93,8 +95,9 @@ elif option == "28 Features":
     else:
         # Scaling input values
         try:
-            scaled_minmax = minmax_scaler_28.transform([inputs_minmax])
-            scaled_standard = standard_scaler_28.transform([inputs_standard])
+            # Transform using the scalers
+            scaled_minmax = minmax_scaler_28.transform([inputs_minmax[:-1]])  # exclude Kurtosis_RB for minmax
+            scaled_standard = standard_scaler_28.transform([inputs_standard[:-1]])  # exclude Kurtosis_RB for standard
 
             # Concatenate scaled features
             combined_inputs_28 = np.concatenate([scaled_minmax, scaled_standard], axis=1)
@@ -109,6 +112,7 @@ elif option == "28 Features":
                     st.write("Please check if the input features are correct and try again.")
         except ValueError as e:
             st.error(f"Error in scaling: {e}")
+
             
 elif option == "Image Classification":
     st.subheader("Upload an image for classification")
