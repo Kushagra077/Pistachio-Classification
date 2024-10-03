@@ -57,8 +57,8 @@ if option == "28 Features":
     inputs_minmax[minmax_features_28.index('Kurtosis_RB')] = 0.0  # Setting default value
 
     # Debugging: Print input lengths
-    st.write("MinMax Inputs:", inputs_minmax)
-    st.write("Standard Inputs:", inputs_standard)
+    # st.write("MinMax Inputs:", inputs_minmax)
+    # st.write("Standard Inputs:", inputs_standard)
 
     # Ensure the lengths match expected counts
     if len(inputs_minmax) != len(minmax_features_28) or len(inputs_standard) != len(standard_features_28):
@@ -92,8 +92,8 @@ elif option == "16 Features":
     inputs_standard_16 = [st.slider(f"{feature}", 0.0, 1000.0, 500.0) for feature in standard_features_16]
 
     # Debugging: Print input lengths
-    st.write("16 Features MinMax Inputs:", inputs_minmax_16)
-    st.write("16 Features Standard Inputs:", inputs_standard_16)
+    # st.write("16 Features MinMax Inputs:", inputs_minmax_16)
+    # st.write("16 Features Standard Inputs:", inputs_standard_16)
 
     # Ensure the lengths match expected counts
     if len(inputs_minmax_16) != len(minmax_features_16) or len(inputs_standard_16) != len(standard_features_16):
