@@ -19,12 +19,19 @@ minmax_features_28 = ['Area', 'Perimeter', 'Major_Axis', 'Minor_Axis', 'Convex_A
                       'StdDev_RB', 'Skew_RR', 'Skew_RG', 'Skew_RB', 'Kurtosis_RR', 'Kurtosis_RG', 'Kurtosis_RB']
 standard_features_28 = ['Eccentricity', 'Extent', 'Aspect_Ratio']
 
-# Scaling
-minmax_scaler_16 = MinMaxScaler()
-standard_scaler_16 = StandardScaler()
+# Sample data to fit scalers (replace this with your actual data)
+sample_data_16_minmax = np.random.rand(100, len(minmax_features_16))
+sample_data_16_standard = np.random.rand(100, len(standard_features_16))
 
-minmax_scaler_28 = MinMaxScaler()
-standard_scaler_28 = StandardScaler()
+sample_data_28_minmax = np.random.rand(100, len(minmax_features_28))
+sample_data_28_standard = np.random.rand(100, len(standard_features_28))
+
+# Scaling
+minmax_scaler_16 = MinMaxScaler().fit(sample_data_16_minmax)
+standard_scaler_16 = StandardScaler().fit(sample_data_16_standard)
+
+minmax_scaler_28 = MinMaxScaler().fit(sample_data_28_minmax)
+standard_scaler_28 = StandardScaler().fit(sample_data_28_standard)
 
 # Streamlit UI
 st.title("Pistachio Image Dataset Predictor")
