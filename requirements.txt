@@ -6,3 +6,4 @@ dill
 joblib
 scikit-learn
 numpy
+catboost
