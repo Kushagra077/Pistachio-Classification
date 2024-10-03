@@ -72,13 +72,14 @@ if option == "16 Features":
 elif option == "28 Features":
     st.subheader("Enter values for 28 features")
 
-    # Input sliders for the 28 features (including Kurtosis_RB)
-    inputs_minmax = [st.slider(f"{feature}", 0.0, 1.0, 0.5) for feature in minmax_features_28]
+    # Input sliders for the 28 features (excluding Kurtosis_RB)
+    inputs_minmax = [st.slider(f"{feature}", 0.0, 1.0, 0.5) for feature in minmax_features_28 if feature != 'Kurtosis_RB']
     inputs_standard = [st.slider(f"{feature}", 0.0, 1000.0, 500.0) for feature in standard_features_28]
 
-    # Verify that all inputs are collected
-    st.write("MinMax features input:", inputs_minmax)
-    st.write("Standard features input:", inputs_standard)
+    # Fixed value for Kurtosis_RB
+    fixed_kurtosis_rb_value = 0.0  # Set this to your desired constant value
+    inputs_minmax.append(fixed_kurtosis_rb_value)  # Append to minmax inputs
+    inputs_standard.append(fixed_kurtosis_rb_value)  # Append to standard inputs (if needed)
 
     # Scaling input values
     scaled_minmax = minmax_scaler_28.transform([inputs_minmax])
@@ -86,9 +87,6 @@ elif option == "28 Features":
 
     # Concatenate scaled features
     combined_inputs_28 = np.concatenate([scaled_minmax, scaled_standard], axis=1)
-
-    # Ensure feature Kurtosis_RB is included
-    st.write("Combined inputs for prediction:", combined_inputs_28)
 
     # Predict
     if st.button("Predict"):
