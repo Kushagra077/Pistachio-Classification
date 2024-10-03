@@ -1,138 +1,3 @@
-# import streamlit as st
-# import numpy as np
-# from sklearn.preprocessing import MinMaxScaler, StandardScaler
-# from PIL import Image
-# from ultralytics import YOLO
-# import joblib
-# import catboost
-
-# # Load your models
-# try:
-#     model_16_features = joblib.load('16_catboost_model.pkl')
-#     model_28_features = joblib.load('catboost_model.pkl')
-#     image_model = YOLO('pistachio_image_classification.pt')  # Load YOLOv8 model
-# except FileNotFoundError as e:
-#     st.error(f"Error loading models: {e}")
-#     st.stop()
-
-# # Feature lists
-# minmax_features_16 = ['ECCENTRICITY', 'EXTENT', 'SOLIDITY', 'ROUNDNESS', 'SHAPEFACTOR_1', 'SHAPEFACTOR_2', 'SHAPEFACTOR_4']
-# standard_features_16 = ['AREA', 'PERIMETER', 'MAJOR_AXIS', 'MINOR_AXIS', 'EQDIASQ', 'CONVEX_AREA', 'ASPECT_RATIO', 'COMPACTNESS', 'SHAPEFACTOR_3']
-
-# minmax_features_28 = ['Area', 'Perimeter', 'Major_Axis', 'Minor_Axis', 'Convex_Area', 'Solidity', 'Roundness', 'Compactness', 'Shapefactor_1', 
-#                       'Shapefactor_2', 'Shapefactor_3', 'Shapefactor_4', 'Mean_RR', 'Mean_RG', 'Mean_RB', 'StdDev_RR', 'StdDev_RG', 
-#                       'StdDev_RB', 'Skew_RR', 'Skew_RG', 'Skew_RB', 'Kurtosis_RR', 'Kurtosis_RG', 'Kurtosis_RB']
-# standard_features_28 = ['Eccentricity', 'Extent', 'Aspect_Ratio']
-
-# # Sample data to fit scalers (replace this with your actual data)
-# sample_data_16_minmax = np.random.rand(100, len(minmax_features_16))
-# sample_data_16_standard = np.random.rand(100, len(standard_features_16))
-
-# sample_data_28_minmax = np.random.rand(100, len(minmax_features_28))
-# sample_data_28_standard = np.random.rand(100, len(standard_features_28))
-
-# # Scaling
-# minmax_scaler_16 = MinMaxScaler().fit(sample_data_16_minmax)
-# standard_scaler_16 = StandardScaler().fit(sample_data_16_standard)
-
-# minmax_scaler_28 = MinMaxScaler().fit(sample_data_28_minmax)
-# standard_scaler_28 = StandardScaler().fit(sample_data_28_standard)
-
-# # Streamlit UI
-# st.title("Pistachio Image Dataset Predictor")
-
-# # Selection of options
-# option = st.sidebar.selectbox("Choose prediction type", ["16 Features", "28 Features", "Image Classification"])
-
-# if option == "16 Features":
-#     st.subheader("Enter values for 16 features")
-
-#     # Input sliders for the 16 features
-#     inputs_minmax = [st.slider(f"{feature}", 0.0, 1.0, 0.5) for feature in minmax_features_16]
-#     inputs_standard = [st.slider(f"{feature}", 0.0, 1000.0, 500.0) for feature in standard_features_16]
-
-#     # Scaling input values
-#     scaled_minmax = minmax_scaler_16.transform([inputs_minmax])
-#     scaled_standard = standard_scaler_16.transform([inputs_standard])
-
-#     # Concatenate scaled features
-#     combined_inputs_16 = np.concatenate([scaled_minmax, scaled_standard], axis=1)
-
-#     # Predict
-#     if st.button("Predict"):
-#         try:
-#             prediction_16 = model_16_features.predict(combined_inputs_16)
-#             st.write(f"Prediction: {prediction_16[0]}")
-#         except catboost.CatBoostError as e:
-#             st.error(f"An error occurred during prediction: {e}")
-#             st.write("Please check if the input features are correct and try again.")
-
-# elif option == "28 Features":
-#     st.subheader("Enter values for 28 features")
-
-#     # Input sliders for the 28 features
-#     inputs_minmax = [st.slider(f"{feature}", 0.0, 1.0, 0.5) for feature in minmax_features_28]
-#     inputs_standard = [st.slider(f"{feature}", 0.0, 1000.0, 500.0) for feature in standard_features_28]
-
-#     # Scaling input values
-#     scaled_minmax = minmax_scaler_28.transform([inputs_minmax])
-#     scaled_standard = standard_scaler_28.transform([inputs_standard])
-
-#     # Concatenate scaled features
-#     combined_inputs_28 = np.concatenate([scaled_minmax, scaled_standard], axis=1)
-
-#     # Predict
-#     if st.button("Predict"):
-#         try:
-#             prediction_28 = model_28_features.predict(combined_inputs_28)
-#             st.write(f"Prediction: {prediction_28[0]}")
-#         except catboost.CatBoostError as e:
-#             st.error(f"An error occurred during prediction: {e}")
-#             st.write("Please check if the input features are correct and try again.")
-
-# elif option == "Image Classification":
-#     st.subheader("Upload an image for classification")
-#     st.write("Upload an image to classify the pistachio type")
-    
-#     uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
-
-#     if uploaded_file is not None:
-#         try:
-#             # Load the uploaded image
-#             image = Image.open(uploaded_file)
-#             # Display the image
-#             st.image(image, caption='Uploaded Image', use_column_width=True)
-            
-#             st.write("")
-#             st.write("Results")
-            
-#             # Perform classification
-#             results = image_model.predict(image)
-            
-#             # Get the predicted class
-#             probs = results[0].probs
-#             predicted_class_index = probs.top1
-#             predicted_class_confidence = probs.top1conf
-            
-#             # Retrieve class names from the model's attribute
-#             class_names = image_model.names
-            
-#             # Get the predicted class name
-#             predicted_class_name = class_names[predicted_class_index]
-            
-#             st.write(f"Predicted class: {predicted_class_name}")
-#             st.write(f"Confidence: {predicted_class_confidence:.2f}")
-#         except Exception as e:
-#             st.error(f"An error occurred during image classification: {e}")
-#             st.write("Please check if the uploaded image is valid and try again.")
-
-# # Add a section to display model information
-# st.sidebar.markdown("---")
-# st.sidebar.subheader("Model Information")
-# st.sidebar.write(f"16 Features Model: {type(model_16_features).__name__}")
-# st.sidebar.write(f"28 Features Model: {type(model_28_features).__name__}")
-# st.sidebar.write(f"Image Model: {type(image_model).__name__}")
-
 import streamlit as st
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
@@ -154,16 +19,10 @@ except FileNotFoundError as e:
 minmax_features_16 = ['ECCENTRICITY', 'EXTENT', 'SOLIDITY', 'ROUNDNESS', 'SHAPEFACTOR_1', 'SHAPEFACTOR_2', 'SHAPEFACTOR_4']
 standard_features_16 = ['AREA', 'PERIMETER', 'MAJOR_AXIS', 'MINOR_AXIS', 'EQDIASQ', 'CONVEX_AREA', 'ASPECT_RATIO', 'COMPACTNESS', 'SHAPEFACTOR_3']
 
-minmax_features_28 = [
-    'Area', 'Perimeter', 'Major_Axis', 'Minor_Axis', 'Convex_Area',
-    'Solidity', 'Roundness', 'Compactness', 'Shapefactor_1', 
-    'Shapefactor_2', 'Shapefactor_3', 'Shapefactor_4', 'Mean_RR',
-    'Mean_RG', 'Mean_RB', 'StdDev_RR', 'StdDev_RG', 'StdDev_RB', 
-    'Skew_RR', 'Skew_RG', 'Skew_RB', 'Kurtosis_RR', 'Kurtosis_RG', 'Kurtosis_RB'
-]
-standard_features_28 = [
-    'Eccentricity', 'Extent', 'Aspect_Ratio'
-]
+minmax_features_28 = ['Area', 'Perimeter', 'Major_Axis', 'Minor_Axis', 'Convex_Area', 'Solidity', 'Roundness', 'Compactness', 'Shapefactor_1', 
+                      'Shapefactor_2', 'Shapefactor_3', 'Shapefactor_4', 'Mean_RR', 'Mean_RG', 'Mean_RB', 'StdDev_RR', 'StdDev_RG', 
+                      'StdDev_RB', 'Skew_RR', 'Skew_RG', 'Skew_RB', 'Kurtosis_RR', 'Kurtosis_RG', 'Kurtosis_RB']
+standard_features_28 = ['Eccentricity', 'Extent', 'Aspect_Ratio']
 
 # Sample data to fit scalers (replace this with your actual data)
 sample_data_16_minmax = np.random.rand(100, len(minmax_features_16))
@@ -211,41 +70,16 @@ if option == "16 Features":
 elif option == "28 Features":
     st.subheader("Enter values for 28 features")
 
-    # Create two columns for better layout
-    col1, col2 = st.columns(2)
-
-    # Initialize empty dictionaries to store inputs
-    inputs_minmax = {}
-    inputs_standard = {}
-
-    # Create input fields for minmax features
-    with col1:
-        st.subheader("MinMax Scaled Features")
-        for feature in minmax_features_28:
-            inputs_minmax[feature] = st.number_input(f"{feature}", value=0.5, min_value=0.0, max_value=1.0, step=0.01)
-
-    # Create input fields for standard features
-    with col2:
-        st.subheader("Standard Scaled Features")
-        for feature in standard_features_28:
-            inputs_standard[feature] = st.number_input(f"{feature}", value=500.0, min_value=0.0, max_value=1000.0, step=1.0)
-
-    # Prepare inputs for scaling
-    minmax_inputs = [inputs_minmax[feature] for feature in minmax_features_28]
-    standard_inputs = [inputs_standard[feature] for feature in standard_features_28]
+    # Input sliders for the 28 features
+    inputs_minmax = [st.slider(f"{feature}", 0.0, 1.0, 0.5) for feature in minmax_features_28]
+    inputs_standard = [st.slider(f"{feature}", 0.0, 1000.0, 500.0) for feature in standard_features_28]
 
     # Scaling input values
-    scaled_minmax = minmax_scaler_28.transform([minmax_inputs])
-    scaled_standard = standard_scaler_28.transform([standard_inputs])
+    scaled_minmax = minmax_scaler_28.transform([inputs_minmax])
+    scaled_standard = standard_scaler_28.transform([inputs_standard])
 
     # Concatenate scaled features
     combined_inputs_28 = np.concatenate([scaled_minmax, scaled_standard], axis=1)
-
-    # Debug information
-    st.write("Features being used:")
-    st.write(minmax_features_28 + standard_features_28)
-    st.write("Shape of combined inputs:")
-    st.write(combined_inputs_28.shape)
 
     # Predict
     if st.button("Predict"):
