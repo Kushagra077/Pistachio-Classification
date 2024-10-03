@@ -155,8 +155,8 @@ elif option == "Image Classification":
             st.write("Please check if the uploaded image is valid and try again.")
 
 # Add a section to display model information
-st.sidebar.markdown("---")
-st.sidebar.subheader("Model Information")
-st.sidebar.write(f"16 Features Model: {type(model_16_features).__name__}")
-st.sidebar.write(f"28 Features Model: {type(model_28_features).__name__}")
-st.sidebar.write(f"Image Model: {type(image_model).__name__}")
+# st.sidebar.markdown("---")
+# st.sidebar.subheader("Model Information")
+# st.sidebar.write(f"16 Features Model: {type(model_16_features).__name__}")
+# st.sidebar.write(f"28 Features Model: {type(model_28_features).__name__}")
+# st.sidebar.write(f"Image Model: {type(image_model).__name__}")
