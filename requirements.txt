@@ -1,4 +1,5 @@
 streamlit
+catboost
 Pillow
 ultralytics
 opencv-python-headless
@@ -6,4 +7,3 @@ dill
 joblib
 scikit-learn
 numpy
-catboost
