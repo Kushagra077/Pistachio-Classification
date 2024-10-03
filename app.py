@@ -4,11 +4,16 @@ from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from PIL import Image
 from ultralytics import YOLO
 import joblib
+import catboost
 
 # Load your models
-model_16_features = joblib.load('16_catboost_model.pkl')
-model_28_features = joblib.load('catboost_model.pkl')
-image_model = YOLO('pistachio_image_classification.pt')  # Load YOLOv8 model
+try:
+    model_16_features = joblib.load('16_catboost_model.pkl')
+    model_28_features = joblib.load('catboost_model.pkl')
+    image_model = YOLO('pistachio_image_classification.pt')  # Load YOLOv8 model
+except FileNotFoundError as e:
+    st.error(f"Error loading models: {e}")
+    st.stop()
 
 # Feature lists
 minmax_features_16 = ['ECCENTRICITY', 'EXTENT', 'SOLIDITY', 'ROUNDNESS', 'SHAPEFACTOR_1', 'SHAPEFACTOR_2', 'SHAPEFACTOR_4']
@@ -55,8 +60,12 @@ if option == "16 Features":
 
     # Predict
     if st.button("Predict"):
-        prediction_16 = model_16_features.predict(combined_inputs_16)
-        st.write(f"Prediction: {prediction_16[0]}")
+        try:
+            prediction_16 = model_16_features.predict(combined_inputs_16)
+            st.write(f"Prediction: {prediction_16[0]}")
+        except catboost.CatBoostError as e:
+            st.error(f"An error occurred during prediction: {e}")
+            st.write("Please check if the input features are correct and try again.")
 
 elif option == "28 Features":
     st.subheader("Enter values for 28 features")
@@ -74,8 +83,12 @@ elif option == "28 Features":
 
     # Predict
     if st.button("Predict"):
-        prediction_28 = model_28_features.predict(combined_inputs_28)
-        st.write(f"Prediction: {prediction_28[0]}")
+        try:
+            prediction_28 = model_28_features.predict(combined_inputs_28)
+            st.write(f"Prediction: {prediction_28[0]}")
+        except catboost.CatBoostError as e:
+            st.error(f"An error occurred during prediction: {e}")
+            st.write("Please check if the input features are correct and try again.")
 
 elif option == "Image Classification":
     st.subheader("Upload an image for classification")
@@ -84,27 +97,38 @@ elif option == "Image Classification":
     uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
 
     if uploaded_file is not None:
-        # Load the uploaded image
-        image = Image.open(uploaded_file)
-        # Display the image
-        st.image(image, caption='Uploaded Image', use_column_width=True)
-        
-        st.write("")
-        st.write("Results")
-        
-        # Perform classification
-        results = image_model.predict(image)
-        
-        # Get the predicted class
-        probs = results[0].probs
-        predicted_class_index = probs.top1
-        predicted_class_confidence = probs.top1conf
-        
-        # Retrieve class names from the model's attribute
-        class_names = image_model.names
-        
-        # Get the predicted class name
-        predicted_class_name = class_names[predicted_class_index]
-        
-        st.write(f"Predicted class: {predicted_class_name}")
-        st.write(f"Confidence: {predicted_class_confidence:.2f}")
+        try:
+            # Load the uploaded image
+            image = Image.open(uploaded_file)
+            # Display the image
+            st.image(image, caption='Uploaded Image', use_column_width=True)
+            
+            st.write("")
+            st.write("Results")
+            
+            # Perform classification
+            results = image_model.predict(image)
+            
+            # Get the predicted class
+            probs = results[0].probs
+            predicted_class_index = probs.top1
+            predicted_class_confidence = probs.top1conf
+            
+            # Retrieve class names from the model's attribute
+            class_names = image_model.names
+            
+            # Get the predicted class name
+            predicted_class_name = class_names[predicted_class_index]
+            
+            st.write(f"Predicted class: {predicted_class_name}")
+            st.write(f"Confidence: {predicted_class_confidence:.2f}")
+        except Exception as e:
+            st.error(f"An error occurred during image classification: {e}")
+            st.write("Please check if the uploaded image is valid and try again.")
+
+# Add a section to display model information
+st.sidebar.markdown("---")
+st.sidebar.subheader("Model Information")
+st.sidebar.write(f"16 Features Model: {type(model_16_features).__name__}")
+st.sidebar.write(f"28 Features Model: {type(model_28_features).__name__}")
+st.sidebar.write(f"Image Model: {type(image_model).__name__}")
