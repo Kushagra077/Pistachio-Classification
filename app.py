@@ -8,7 +8,7 @@ import joblib
 # Load your models
 model_16_features = joblib.load('16_catboost_model.pkl')
 model_28_features = joblib.load('catboost_model.pkl')
-image_model = YOLO('pistachio_image_classification.pt')  # Load YOLOv5 or YOLOv8 model (replace with your model path if needed)
+image_model = YOLO('pistachio_image_classification.pt')  # Load YOLOv8 model
 
 # Feature lists
 minmax_features_16 = ['ECCENTRICITY', 'EXTENT', 'SOLIDITY', 'ROUNDNESS', 'SHAPEFACTOR_1', 'SHAPEFACTOR_2', 'SHAPEFACTOR_4']
@@ -79,34 +79,32 @@ elif option == "28 Features":
 
 elif option == "Image Classification":
     st.subheader("Upload an image for classification")
+    st.write("Upload an image to classify the pistachio type")
     
-    uploaded_file = st.file_uploader("Choose an image...", type="jpg")
+    uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
 
     if uploaded_file is not None:
+        # Load the uploaded image
         image = Image.open(uploaded_file)
+        # Display the image
         st.image(image, caption='Uploaded Image', use_column_width=True)
-
-        # Preprocess the image as required by YOLO (resizing, conversion to numpy array)
-        image = np.array(image)
-
-        # YOLO model expects an image path, so save the image temporarily
-        img_path = "temp_image.jpg"
-        Image.fromarray(image).save(img_path)
-
-        if st.button("Classify"):
-            # Perform classification using the model
-            results = image_model.predict(img_path)
-
-            # Get the predicted class
-            probs = results[0].probs  # Assuming results[0] contains probability data
-            predicted_class_index = probs.top1
-            predicted_class_confidence = probs.top1conf
-
-            # Retrieve class names from the model's attribute
-            class_names = image_model.names
-
-            # Get the predicted class name
-            predicted_class_name = class_names[predicted_class_index]
-
-            st.write(f"Predicted class: {predicted_class_name}")
-            st.write(f"Confidence: {predicted_class_confidence:.2f}")
+        
+        st.write("")
+        st.write("Results")
+        
+        # Perform classification
+        results = image_model.predict(image)
+        
+        # Get the predicted class
+        probs = results[0].probs
+        predicted_class_index = probs.top1
+        predicted_class_confidence = probs.top1conf
+        
+        # Retrieve class names from the model's attribute
+        class_names = image_model.names
+        
+        # Get the predicted class name
+        predicted_class_name = class_names[predicted_class_index]
+        
+        st.write(f"Predicted class: {predicted_class_name}")
+        st.write(f"Confidence: {predicted_class_confidence:.2f}")
