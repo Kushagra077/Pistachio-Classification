@@ -22,7 +22,7 @@ standard_features_16 = ['AREA', 'PERIMETER', 'MAJOR_AXIS', 'MINOR_AXIS', 'EQDIAS
 minmax_features_28 = [
     'Area', 'Perimeter', 'Major_Axis', 'Minor_Axis', 'Convex_Area', 'Solidity', 'Roundness', 'Compactness', 'Shapefactor_1', 
     'Shapefactor_2', 'Shapefactor_3', 'Shapefactor_4', 'Mean_RR', 'Mean_RG', 'Mean_RB', 'StdDev_RR', 'StdDev_RG', 'StdDev_RB', 
-    'Skew_RR', 'Skew_RG', 'Skew_RB', 'Kurtosis_RR', 'Kurtosis_RG', 'Kurtosis_RB'  # Kurtosis_RB included
+    'Skew_RR', 'Skew_RG', 'Skew_RB', 'Kurtosis_RR', 'Kurtosis_RG', 'Kurtosis_RB'
 ]
 standard_features_28 = ['Eccentricity', 'Extent', 'Aspect_Ratio']
 
@@ -72,28 +72,27 @@ if option == "16 Features":
 elif option == "28 Features":
     st.subheader("Enter values for 28 features")
 
-    # Input sliders for the 28 features (including Kurtosis_RB)
+    # Input sliders for the 28 features
     inputs_minmax = [st.slider(f"{feature}", 0.0, 1.0, 0.5) for feature in minmax_features_28]
     inputs_standard = [st.slider(f"{feature}", 0.0, 1000.0, 500.0) for feature in standard_features_28]
 
-    # Set a default value for Kurtosis_RB
-    inputs_minmax[-1] = 0.5  # Default value for Kurtosis_RB
+    # Ensure Kurtosis_RB has a default value and is included
+    inputs_minmax[-1] = 0.5  # This sets Kurtosis_RB to 0.5 by default
 
     # Scaling input values
-    scaled_minmax = minmax_scaler_28.transform([inputs_minmax])
-    scaled_standard = standard_scaler_28.transform([inputs_standard])
+    try:
+        scaled_minmax = minmax_scaler_28.transform([inputs_minmax])
+        scaled_standard = standard_scaler_28.transform([inputs_standard])
 
-    # Concatenate scaled features
-    combined_inputs_28 = np.concatenate([scaled_minmax, scaled_standard], axis=1)
+        # Concatenate scaled features
+        combined_inputs_28 = np.concatenate([scaled_minmax, scaled_standard], axis=1)
 
-    # Predict
-    if st.button("Predict"):
-        try:
+        # Predict
+        if st.button("Predict"):
             prediction_28 = model_28_features.predict(combined_inputs_28)
             st.write(f"Prediction: {prediction_28[0]}")
-        except catboost.CatBoostError as e:
-            st.error(f"An error occurred during prediction: {e}")
-            st.write("Please check if the input features are correct and try again.")
+    except Exception as e:
+        st.error(f"An error occurred during prediction: {e}")
 
 elif option == "Image Classification":
     st.subheader("Upload an image for classification")
