@@ -94,13 +94,19 @@ elif option == "Image Classification":
         Image.fromarray(image).save(img_path)
 
         if st.button("Classify"):
-            # Perform classification using YOLOv5
-            results = image_model(img_path)  # This runs inference
+            # Perform classification using the model
+            results = image_model.predict(img_path)
 
-            # Extract predicted class and confidence score
-            if results:
-                result = results[0]  # Take the first prediction result
-                st.write(f"Class: {result.names[result.pred[0, -1]]}")  # Display class
-                st.write(f"Confidence: {result.pred[0, -2]}")  # Display confidence score
-            else:
-                st.write("No objects detected in the image.")
+            # Get the predicted class
+            probs = results[0].probs  # Assuming results[0] contains probability data
+            predicted_class_index = probs.top1
+            predicted_class_confidence = probs.top1conf
+
+            # Retrieve class names from the model's attribute
+            class_names = image_model.names
+
+            # Get the predicted class name
+            predicted_class_name = class_names[predicted_class_index]
+
+            st.write(f"Predicted class: {predicted_class_name}")
+            st.write(f"Confidence: {predicted_class_confidence:.2f}")
