@@ -72,33 +72,44 @@ if option == "16 Features":
 elif option == "28 Features":
     st.subheader("Enter values for 28 features")
 
-    # Input sliders for the 28 features (excluding Kurtosis_RB)
+    # Input sliders for the 28 features (including Kurtosis_RB)
     inputs_minmax = [st.slider(f"{feature}", 0.0, 1.0, 0.5) for feature in minmax_features_28]
     inputs_standard = [st.slider(f"{feature}", 0.0, 1000.0, 500.0) for feature in standard_features_28]
 
     # Fixed value for Kurtosis_RB
-    fixed_kurtosis_rb_value = 0.0  # Set this to your desired constant value
+    fixed_kurtosis_rb_value = 0.0  # Change this to your desired constant value
 
-    # Ensure inputs are of the correct length by adding the fixed Kurtosis_RB value
-    inputs_minmax.append(fixed_kurtosis_rb_value)  # Add to minmax inputs
-    inputs_standard.append(fixed_kurtosis_rb_value)  # Add to standard inputs
+    # Ensure we are appending the fixed value correctly
+    inputs_minmax.append(fixed_kurtosis_rb_value)  # Append for minmax input
+    inputs_standard.append(fixed_kurtosis_rb_value)  # Append for standard input
 
-    # Scaling input values
-    scaled_minmax = minmax_scaler_28.transform([inputs_minmax])
-    scaled_standard = standard_scaler_28.transform([inputs_standard])
+    # Debugging: Print input lengths
+    st.write("MinMax Inputs:", inputs_minmax)
+    st.write("Standard Inputs:", inputs_standard)
 
-    # Concatenate scaled features
-    combined_inputs_28 = np.concatenate([scaled_minmax, scaled_standard], axis=1)
-
-    # Predict
-    if st.button("Predict"):
+    # Check if the lengths match expected counts
+    if len(inputs_minmax) != len(minmax_features_28) or len(inputs_standard) != len(standard_features_28):
+        st.error("Mismatch in the number of features. Please ensure all features are correctly set.")
+    else:
+        # Scaling input values
         try:
-            prediction_28 = model_28_features.predict(combined_inputs_28)
-            st.write(f"Prediction: {prediction_28[0]}")
-        except catboost.CatBoostError as e:
-            st.error(f"An error occurred during prediction: {e}")
-            st.write("Please check if the input features are correct and try again.")
+            scaled_minmax = minmax_scaler_28.transform([inputs_minmax])
+            scaled_standard = standard_scaler_28.transform([inputs_standard])
 
+            # Concatenate scaled features
+            combined_inputs_28 = np.concatenate([scaled_minmax, scaled_standard], axis=1)
+
+            # Predict
+            if st.button("Predict"):
+                try:
+                    prediction_28 = model_28_features.predict(combined_inputs_28)
+                    st.write(f"Prediction: {prediction_28[0]}")
+                except catboost.CatBoostError as e:
+                    st.error(f"An error occurred during prediction: {e}")
+                    st.write("Please check if the input features are correct and try again.")
+        except ValueError as e:
+            st.error(f"Error in scaling: {e}")
+            
 elif option == "Image Classification":
     st.subheader("Upload an image for classification")
     st.write("Upload an image to classify the pistachio type")
