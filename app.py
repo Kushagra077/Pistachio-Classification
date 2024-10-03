@@ -2,7 +2,8 @@ import streamlit as st
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from PIL import Image
-from ultralytics import YOLO  # Ultralytics YOLOv5 or YOLOv8 library
+from ultralytics import YOLO
+import joblib
 
 # Load your models
 model_16_features = joblib.load('16_catboost_model.pkl')
