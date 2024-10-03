@@ -22,7 +22,7 @@ standard_features_16 = ['AREA', 'PERIMETER', 'MAJOR_AXIS', 'MINOR_AXIS', 'EQDIAS
 minmax_features_28 = [
     'Area', 'Perimeter', 'Major_Axis', 'Minor_Axis', 'Convex_Area', 'Solidity', 'Roundness', 'Compactness', 'Shapefactor_1', 
     'Shapefactor_2', 'Shapefactor_3', 'Shapefactor_4', 'Mean_RR', 'Mean_RG', 'Mean_RB', 'StdDev_RR', 'StdDev_RG', 'StdDev_RB', 
-    'Skew_RR', 'Skew_RG', 'Skew_RB', 'Kurtosis_RR', 'Kurtosis_RG', 'Kurtosis_RB'
+    'Skew_RR', 'Skew_RG', 'Skew_RB', 'Kurtosis_RR', 'Kurtosis_RG', 'Kurtosis_RB', 'Eccentricity', 'Extent', 'Aspect_Ratio'
 ]
 standard_features_28 = ['Eccentricity', 'Extent', 'Aspect_Ratio']
 
@@ -46,53 +46,78 @@ st.title("Pistachio Image Dataset Predictor")
 # Selection of options
 option = st.sidebar.selectbox("Choose prediction type", ["16 Features", "28 Features", "Image Classification"])
 
-if option == "16 Features":
-    st.subheader("Enter values for 16 features")
-
-    # Input sliders for the 16 features
-    inputs_minmax = [st.slider(f"{feature}", 0.0, 1.0, 0.5) for feature in minmax_features_16]
-    inputs_standard = [st.slider(f"{feature}", 0.0, 1000.0, 500.0) for feature in standard_features_16]
-
-    # Scaling input values
-    scaled_minmax = minmax_scaler_16.transform([inputs_minmax])
-    scaled_standard = standard_scaler_16.transform([inputs_standard])
-
-    # Concatenate scaled features
-    combined_inputs_16 = np.concatenate([scaled_minmax, scaled_standard], axis=1)
-
-    # Predict
-    if st.button("Predict"):
-        try:
-            prediction_16 = model_16_features.predict(combined_inputs_16)
-            st.write(f"Prediction: {prediction_16[0]}")
-        except catboost.CatBoostError as e:
-            st.error(f"An error occurred during prediction: {e}")
-            st.write("Please check if the input features are correct and try again.")
-
-elif option == "28 Features":
+if option == "28 Features":
     st.subheader("Enter values for 28 features")
 
     # Input sliders for the 28 features
     inputs_minmax = [st.slider(f"{feature}", 0.0, 1.0, 0.5) for feature in minmax_features_28]
     inputs_standard = [st.slider(f"{feature}", 0.0, 1000.0, 500.0) for feature in standard_features_28]
 
-    # Ensure Kurtosis_RB has a default value and is included
-    inputs_minmax[-1] = 0.5  # This sets Kurtosis_RB to 0.5 by default
+    # Set a fixed value for Kurtosis_RB
+    inputs_minmax[minmax_features_28.index('Kurtosis_RB')] = 0.0  # Setting default value
 
-    # Scaling input values
-    try:
-        scaled_minmax = minmax_scaler_28.transform([inputs_minmax])
-        scaled_standard = standard_scaler_28.transform([inputs_standard])
+    # Debugging: Print input lengths
+    st.write("MinMax Inputs:", inputs_minmax)
+    st.write("Standard Inputs:", inputs_standard)
 
-        # Concatenate scaled features
-        combined_inputs_28 = np.concatenate([scaled_minmax, scaled_standard], axis=1)
+    # Ensure the lengths match expected counts
+    if len(inputs_minmax) != len(minmax_features_28) or len(inputs_standard) != len(standard_features_28):
+        st.error("Mismatch in the number of features. Please ensure all features are correctly set.")
+    else:
+        # Scaling input values
+        try:
+            # Transform using the scalers
+            scaled_minmax = minmax_scaler_28.transform([inputs_minmax])
+            scaled_standard = standard_scaler_28.transform([inputs_standard])
 
-        # Predict
-        if st.button("Predict"):
-            prediction_28 = model_28_features.predict(combined_inputs_28)
-            st.write(f"Prediction: {prediction_28[0]}")
-    except Exception as e:
-        st.error(f"An error occurred during prediction: {e}")
+            # Concatenate scaled features
+            combined_inputs_28 = np.concatenate([scaled_minmax, scaled_standard], axis=1)
+
+            # Predict
+            if st.button("Predict"):
+                try:
+                    prediction_28 = model_28_features.predict(combined_inputs_28)
+                    st.write(f"Prediction: {prediction_28[0]}")
+                except catboost.CatBoostError as e:
+                    st.error(f"An error occurred during prediction: {e}")
+                    st.write("Please check if the input features are correct and try again.")
+        except ValueError as e:
+            st.error(f"Error in scaling: {e}")
+
+elif option == "16 Features":
+    st.subheader("Enter values for 16 features")
+
+    # Input sliders for the 16 features
+    inputs_minmax_16 = [st.slider(f"{feature}", 0.0, 1.0, 0.5) for feature in minmax_features_16]
+    inputs_standard_16 = [st.slider(f"{feature}", 0.0, 1000.0, 500.0) for feature in standard_features_16]
+
+    # Debugging: Print input lengths
+    st.write("16 Features MinMax Inputs:", inputs_minmax_16)
+    st.write("16 Features Standard Inputs:", inputs_standard_16)
+
+    # Ensure the lengths match expected counts
+    if len(inputs_minmax_16) != len(minmax_features_16) or len(inputs_standard_16) != len(standard_features_16):
+        st.error("Mismatch in the number of features for 16 Features. Please ensure all features are correctly set.")
+    else:
+        # Scaling input values
+        try:
+            # Transform using the scalers
+            scaled_minmax_16 = minmax_scaler_16.transform([inputs_minmax_16])
+            scaled_standard_16 = standard_scaler_16.transform([inputs_standard_16])
+
+            # Concatenate scaled features
+            combined_inputs_16 = np.concatenate([scaled_minmax_16, scaled_standard_16], axis=1)
+
+            # Predict
+            if st.button("Predict 16 Features"):
+                try:
+                    prediction_16 = model_16_features.predict(combined_inputs_16)
+                    st.write(f"Prediction: {prediction_16[0]}")
+                except catboost.CatBoostError as e:
+                    st.error(f"An error occurred during prediction: {e}")
+                    st.write("Please check if the input features are correct and try again.")
+        except ValueError as e:
+            st.error(f"Error in scaling for 16 Features: {e}")
 
 elif option == "Image Classification":
     st.subheader("Upload an image for classification")
