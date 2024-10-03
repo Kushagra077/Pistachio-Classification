@@ -22,7 +22,7 @@ standard_features_16 = ['AREA', 'PERIMETER', 'MAJOR_AXIS', 'MINOR_AXIS', 'EQDIAS
 minmax_features_28 = [
     'Area', 'Perimeter', 'Major_Axis', 'Minor_Axis', 'Convex_Area', 'Solidity', 'Roundness', 'Compactness', 'Shapefactor_1', 
     'Shapefactor_2', 'Shapefactor_3', 'Shapefactor_4', 'Mean_RR', 'Mean_RG', 'Mean_RB', 'StdDev_RR', 'StdDev_RG', 'StdDev_RB', 
-    'Skew_RR', 'Skew_RG', 'Skew_RB', 'Kurtosis_RR', 'Kurtosis_RG', 'Kurtosis_RB'  # Ensure Kurtosis_RB is included here
+    'Skew_RR', 'Skew_RG', 'Skew_RB', 'Kurtosis_RR', 'Kurtosis_RG', 'Kurtosis_RB'  # Kurtosis_RB included here
 ]
 standard_features_28 = ['Eccentricity', 'Extent', 'Aspect_Ratio']
 
@@ -76,7 +76,7 @@ elif option == "28 Features":
     inputs_minmax = [st.slider(f"{feature}", 0.0, 1.0, 0.5) for feature in minmax_features_28]
     inputs_standard = [st.slider(f"{feature}", 0.0, 1000.0, 500.0) for feature in standard_features_28]
 
-    # Check if all inputs are collected
+    # Verify that all inputs are collected
     st.write("MinMax features input:", inputs_minmax)
     st.write("Standard features input:", inputs_standard)
 
@@ -84,15 +84,15 @@ elif option == "28 Features":
     scaled_minmax = minmax_scaler_28.transform([inputs_minmax])
     scaled_standard = standard_scaler_28.transform([inputs_standard])
 
-    # Check if scaling is correct
+    # Verify that scaling works as expected
     st.write("Scaled MinMax features:", scaled_minmax)
     st.write("Scaled Standard features:", scaled_standard)
 
     # Concatenate scaled features
     combined_inputs_28 = np.concatenate([scaled_minmax, scaled_standard], axis=1)
 
-    # Check concatenated input
-    st.write("Combined inputs:", combined_inputs_28)
+    # Verify concatenated inputs
+    st.write("Combined inputs for prediction:", combined_inputs_28)
 
     # Predict
     if st.button("Predict"):
