@@ -213,7 +213,7 @@ option = st.sidebar.selectbox("Choose prediction type", ["16 Features", "28 Feat
 if option == "28 Features":
     st.subheader("Enter values for 28 features")
 
-    # Define your features and ranges as before
+    # Define your features and ranges
     features = [
         "Area", "Perimeter", "Major_Axis", "Minor_Axis", "Convex_Area",
         "Solidity", "Roundness", "Compactness", "Shapefactor_1", 
@@ -232,40 +232,34 @@ if option == "28 Features":
         (1.40, 12.00), (0.00, 1.00), (0.00, 1.00), (1.00, 3.50)
     ]
 
-    # Create sliders with unique labels and consistent types
+    # Create sliders for Min-Max scaling
     inputs_minmax = []
     for index, (feature, (min_val, max_val)) in enumerate(zip(features, ranges)):
-        # Ensure min_val, max_val are floats where necessary
-        if isinstance(min_val, float) or isinstance(max_val, float):
-            value = st.slider(f"{feature} ({index})", float(min_val), float(max_val), float((min_val + max_val) / 2))
-        else:
-            value = st.slider(f"{feature} ({index})", int(min_val), int(max_val), int((min_val + max_val) / 2))
-        
+        value = st.slider(f"{feature} (Min-Max) ({index})", min_value=float(min_val), max_value=float(max_val), value=float((min_val + max_val) / 2))
         inputs_minmax.append(value)
 
+    # Create sliders for Standard scaling
+    inputs_standard = []
+    for index, (feature, (min_val, max_val)) in enumerate(zip(features, ranges)):
+        value = st.slider(f"{feature} (Standard) ({index})", min_value=float(min_val), max_value=float(max_val), value=float((min_val + max_val) / 2))
+        inputs_standard.append(value)
+
     # Ensure the lengths match expected counts
-    if len(inputs_minmax) != len(features):
+    if len(inputs_minmax) != len(features) or len(inputs_standard) != len(features):
         st.error("Mismatch in the number of features. Please ensure all features are correctly set.")
     else:
-        # Scaling input values
         try:
             # Transform using the scalers
             scaled_minmax = minmax_scaler_28.transform([inputs_minmax])
             scaled_standard = standard_scaler_28.transform([inputs_standard])
 
             # Concatenate scaled features
-            combined_inputs_28 = np.concatenate([scaled_minmax, scaled_standard], axis=1)
-
-            # Predict
-            if st.button("Predict"):
-                try:
-                    prediction_28 = model_28_features.predict(combined_inputs_28)
-                    st.write(f"Prediction: {prediction_28[0]}")
-                except catboost.CatBoostError as e:
-                    st.error(f"An error occurred during prediction: {e}")
-                    st.write("Please check if the input features are correct and try again.")
-        except ValueError as e:
-            st.error(f"Error in scaling: {e}")
+            combined_inputs_28 = np.concatenate([scaled_minmax, scaled_standard])
+            
+            # Proceed with prediction or further processing
+            st.success("Features successfully scaled and combined!")
+        except Exception as e:
+            st.error(f"An error occurred during scaling: {str(e)}")
 
 elif option == "16 Features":
     st.subheader("Enter values for 16 features")
