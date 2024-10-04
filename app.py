@@ -333,14 +333,12 @@ elif option == "Image Classification":
         image = Image.open(uploaded_file)
         st.image(image, caption="Uploaded Image", use_column_width=True)
 
-        # Perform image classification with YOLO model
         if st.button("Classify"):
-    results = image_model(image)
-    if results:  # Check if results are not empty
-        # Assuming results is a list of detections
-        for result in results:
-            result.render()  # Render boxes on the image
-            st.image(result.imgs[0], caption="Classified Image", use_column_width=True)
-            st.write(f"Detected pistachio type: {result.names[result.pred[0][5].item()]}")
-    else:
-        st.write("No objects detected.")
+            results = image_model(image)  # Indented to be part of the if block
+            if results:  # Check if results are not empty
+                for result in results:  # Ensure this line is also indented
+                    result.render()  # Render boxes on the image
+                    st.image(result.imgs[0], caption="Classified Image", use_column_width=True)
+                    st.write(f"Detected pistachio type: {result.names[result.pred[0][5].item()]}")
+            else:
+                st.write("No objects detected.")
