@@ -235,17 +235,17 @@ if option == "28 Features":
     # Create sliders for Min-Max scaling
     inputs_minmax = []
     for index, (feature, (min_val, max_val)) in enumerate(zip(features, ranges)):
-        value = st.slider(f"{feature} (Min-Max) ({index})", min_value=float(min_val), max_value=float(max_val), value=float((min_val + max_val) / 2))
+        value = st.slider(f"{feature} (Min-Max)", min_value=float(min_val), max_value=float(max_val), value=float((min_val + max_val) / 2))
         inputs_minmax.append(value)
 
-    # Create sliders for Standard scaling
+    # Only scale relevant features for Standard scaling
     inputs_standard = []
-    for index, (feature, (min_val, max_val)) in enumerate(zip(features, ranges)):
-        value = st.slider(f"{feature} (Standard) ({index})", min_value=float(min_val), max_value=float(max_val), value=float((min_val + max_val) / 2))
+    for index, (feature, (min_val, max_val)) in enumerate(zip(features[:3], ranges[:3])):  # Assuming first 3 features for standard scaling
+        value = st.slider(f"{feature} (Standard)", min_value=float(min_val), max_value=float(max_val), value=float((min_val + max_val) / 2))
         inputs_standard.append(value)
 
     # Ensure the lengths match expected counts
-    if len(inputs_minmax) != len(features) or len(inputs_standard) != len(features):
+    if len(inputs_minmax) != len(features) or len(inputs_standard) != 3:  # Expecting only 3 for standard
         st.error("Mismatch in the number of features. Please ensure all features are correctly set.")
     else:
         try:
