@@ -232,7 +232,7 @@ if option == "28 Features":
         st.slider("Mean_RB", 140, 250, 195),
         st.slider("StdDev_RR", 9, 33, 21),
         st.slider("StdDev_RG", 10, 35, 22),
-        st.slider("StdDev_RB", 10, 45, 27.5),
+        st.slider("StdDev_RB", 10, 45, 28),
         st.slider("Skew_RR", -2.0, 2.0, 0.0),
         st.slider("Skew_RG", -1.75, 2.5, 0.375),
         st.slider("Skew_RB", -2.5, 2.0, -0.25),
