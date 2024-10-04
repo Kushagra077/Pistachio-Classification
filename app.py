@@ -215,40 +215,40 @@ if option == "28 Features":
 
     # Create sliders for Min-Max scaling
     inputs_minmax_28 = [
-        st.slider("AREA (Min-Max)", 25000, 130000, 77500, step=1),  # int
-        st.slider("PERIMETER (Min-Max)", 800, 3000, 1900, step=1),   # int
-        st.slider("MAJOR_AXIS (Min-Max)", 300, 560, 430, step=1),    # int
-        st.slider("MINOR_AXIS (Min-Max)", 120, 400, 260, step=1),     # int
-        st.slider("CONVEX_AREA (Min-Max)", 35000, 140000, 87500, step=1),  # int
-        st.slider("SOLIDITY (Min-Max)", 0, 1, 0.5, step=1),          # int
-        st.slider("ROUNDNESS (Min-Max)", 0, 1, 0.5, step=1),         # int
-        st.slider("COMPACTNESS (Min-Max)", 0, 1, 0.5, step=1),       # int
-        st.slider("SHAPEFACTOR_1 (Min-Max)", 0, 2, 1, step=1),      # Adjusted for integer range
-        st.slider("SHAPEFACTOR_2 (Min-Max)", 0, 1, 0, step=1),      # Adjusted for integer range
-        st.slider("SHAPEFACTOR_3 (Min-Max)", 0, 1, 0.5, step=1),     # int
-        st.slider("SHAPEFACTOR_4 (Min-Max)", 0, 1, 0.5, step=1),     # int
-        st.slider("MEAN_RR (Min-Max)", 150, 250, 200, step=1),      # int
-        st.slider("MEAN_RG (Min-Max)", 150, 250, 200, step=1),      # int
-        st.slider("MEAN_RB (Min-Max)", 140, 250, 195, step=1),      # int
-        st.slider("STDDEV_RR (Min-Max)", 9, 33, 21, step=1),        # int
-        st.slider("STDDEV_RG (Min-Max)", 10, 35, 22, step=1),       # int
-        st.slider("STDDEV_RB (Min-Max)", 10, 45, 27, step=1),       # int
-        st.slider("SKEW_RR (Min-Max)", -2, 2, 0, step=1),            # Adjusted for integer range
-        st.slider("SKEW_RG (Min-Max)", -2, 3, 0, step=1),            # Adjusted for integer range
-        st.slider("SKEW_RB (Min-Max)", -3, 2, 0, step=1),            # Adjusted for integer range
-        st.slider("KURTOSIS_RR (Min-Max)", 1, 9, 5, step=1),        # Adjusted for integer range
-        st.slider("KURTOSIS_RG (Min-Max)", 1, 11, 6, step=1),       # Adjusted for integer range
-        st.slider("KURTOSIS_RB (Min-Max)", 1, 12, 7, step=1),       # Adjusted for integer range
-        st.slider("ECCENTRICITY (Min-Max)", 0, 1, 0, step=1),      # int
-        st.slider("EXTENT (Min-Max)", 0, 1, 0, step=1),             # int
-        st.slider("ASPECT_RATIO (Min-Max)", 1, 4, 2, step=1)        # Adjusted for integer range
+        st.slider("AREA (Min-Max)", min_value=25000, max_value=130000, value=77500, step=1),
+        st.slider("PERIMETER (Min-Max)", min_value=800, max_value=3000, value=1900, step=1),
+        st.slider("MAJOR_AXIS (Min-Max)", min_value=300, max_value=560, value=430, step=1),
+        st.slider("MINOR_AXIS (Min-Max)", min_value=120, max_value=400, value=260, step=1),
+        st.slider("CONVEX_AREA (Min-Max)", min_value=35000, max_value=140000, value=87500, step=1),
+        st.slider("SOLIDITY (Min-Max)", min_value=0, max_value=1, value=0, step=1),
+        st.slider("ROUNDNESS (Min-Max)", min_value=0, max_value=1, value=0, step=1),
+        st.slider("COMPACTNESS (Min-Max)", min_value=0, max_value=1, value=0, step=1),
+        st.slider("SHAPEFACTOR_1 (Min-Max)", min_value=0, max_value=2, value=1, step=1),
+        st.slider("SHAPEFACTOR_2 (Min-Max)", min_value=0, max_value=1, value=0, step=1),
+        st.slider("SHAPEFACTOR_3 (Min-Max)", min_value=0, max_value=1, value=0, step=1),
+        st.slider("SHAPEFACTOR_4 (Min-Max)", min_value=0, max_value=1, value=0, step=1),
+        st.slider("MEAN_RR (Min-Max)", min_value=150, max_value=250, value=200, step=1),
+        st.slider("MEAN_RG (Min-Max)", min_value=150, max_value=250, value=200, step=1),
+        st.slider("MEAN_RB (Min-Max)", min_value=140, max_value=250, value=195, step=1),
+        st.slider("STDDEV_RR (Min-Max)", min_value=9, max_value=33, value=21, step=1),
+        st.slider("STDDEV_RG (Min-Max)", min_value=10, max_value=35, value=22, step=1),
+        st.slider("STDDEV_RB (Min-Max)", min_value=10, max_value=45, value=27, step=1),
+        st.slider("SKEW_RR (Min-Max)", min_value=-2, max_value=2, value=0, step=1),
+        st.slider("SKEW_RG (Min-Max)", min_value=-2, max_value=3, value=0, step=1),
+        st.slider("SKEW_RB (Min-Max)", min_value=-3, max_value=2, value=0, step=1),
+        st.slider("KURTOSIS_RR (Min-Max)", min_value=1, max_value=9, value=5, step=1),
+        st.slider("KURTOSIS_RG (Min-Max)", min_value=1, max_value=11, value=6, step=1),
+        st.slider("KURTOSIS_RB (Min-Max)", min_value=1, max_value=12, value=7, step=1),
+        st.slider("ECCENTRICITY (Min-Max)", min_value=0, max_value=1, value=0, step=1),
+        st.slider("EXTENT (Min-Max)", min_value=0, max_value=1, value=0, step=1),
+        st.slider("ASPECT_RATIO (Min-Max)", min_value=1, max_value=4, value=2, step=1)
     ]
 
     # Create sliders for Standard scaling (Only the relevant features)
     inputs_standard_28 = [
-        st.slider("Eccentricity (Standard)", 0, 1, 0, step=1),      # int
-        st.slider("Extent (Standard)", 0, 1, 0, step=1),            # int
-        st.slider("Aspect Ratio (Standard)", 1, 4, 2, step=1)       # Adjusted for integer range
+        st.slider("Eccentricity (Standard)", min_value=0, max_value=1, value=0, step=1),
+        st.slider("Extent (Standard)", min_value=0, max_value=1, value=0, step=1),
+        st.slider("Aspect Ratio (Standard)", min_value=1, max_value=4, value=2, step=1)
     ]
 
     # Ensure the lengths match expected counts
@@ -273,6 +273,7 @@ if option == "28 Features":
                     st.write("Please check if the input features are correct and try again.")
         except ValueError as e:
             st.error(f"Error in scaling: {e}")
+
 
 elif option == "16 Features":
     st.subheader("Enter values for 16 features")
