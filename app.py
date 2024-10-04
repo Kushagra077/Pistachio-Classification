@@ -213,7 +213,7 @@ option = st.sidebar.selectbox("Choose prediction type", ["16 Features", "28 Feat
 if option == "28 Features":
     st.subheader("Enter values for 28 features")
 
-    # Define your features
+    # Define your features and ranges as before
     features = [
         "Area", "Perimeter", "Major_Axis", "Minor_Axis", "Convex_Area",
         "Solidity", "Roundness", "Compactness", "Shapefactor_1", 
@@ -223,7 +223,6 @@ if option == "28 Features":
         "Kurtosis_RB", "Eccentricity", "Extent", "Aspect_Ratio"
     ]
 
-    # Define min-max ranges for each feature (update ranges as needed)
     ranges = [
         (25000, 130000), (800, 3000), (300, 560), (120, 400), (35000, 140000),
         (0.00, 1.00), (0.00, 1.00), (0.00, 1.00), (0.00, 0.02),
@@ -233,10 +232,15 @@ if option == "28 Features":
         (1.40, 12.00), (0.00, 1.00), (0.00, 1.00), (1.00, 3.50)
     ]
 
-    # Create sliders with unique labels
+    # Create sliders with unique labels and consistent types
     inputs_minmax = []
     for index, (feature, (min_val, max_val)) in enumerate(zip(features, ranges)):
-        value = st.slider(f"{feature} ({index})", min_val, max_val, (min_val + max_val) / 2)
+        # Ensure min_val, max_val are floats where necessary
+        if isinstance(min_val, float) or isinstance(max_val, float):
+            value = st.slider(f"{feature} ({index})", float(min_val), float(max_val), float((min_val + max_val) / 2))
+        else:
+            value = st.slider(f"{feature} ({index})", int(min_val), int(max_val), int((min_val + max_val) / 2))
+        
         inputs_minmax.append(value)
 
     # Ensure the lengths match expected counts
