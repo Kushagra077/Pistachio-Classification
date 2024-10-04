@@ -213,7 +213,7 @@ option = st.sidebar.selectbox("Choose prediction type", ["16 Features", "28 Feat
 if option == "28 Features":
     st.subheader("Enter values for 28 features")
 
-    # Input sliders for the 28 features
+    # Input sliders for the 28 features (minmax_features_28)
     inputs_minmax = [
         st.slider("Area", 25000, 130000, 77500),
         st.slider("Perimeter", 800, 3000, 1900),
@@ -241,15 +241,17 @@ if option == "28 Features":
         st.slider("Kurtosis_RB", 1.4, 12.0, 6.7)
     ]
 
+    # Input sliders for standard features (standard_features_28)
     inputs_standard = [
         st.slider("Eccentricity", 0.0, 1.0, 0.5),
         st.slider("Extent", 0.0, 1.0, 0.5),
         st.slider("Aspect_Ratio", 1.0, 3.5, 2.25)
     ]
-    # Set a fixed value for Kurtosis_RB
-    inputs_minmax[minmax_features_28.index('Kurtosis_RB')] = 0.0  # Setting default value
 
     # Ensure the lengths match expected counts
+    st.write(f"Length of inputs_minmax: {len(inputs_minmax)} (Expected: {len(minmax_features_28)})")
+    st.write(f"Length of inputs_standard: {len(inputs_standard)} (Expected: {len(standard_features_28)})")
+
     if len(inputs_minmax) != len(minmax_features_28) or len(inputs_standard) != len(standard_features_28):
         st.error("Mismatch in the number of features. Please ensure all features are correctly set.")
     else:
