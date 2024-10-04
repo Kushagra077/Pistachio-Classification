@@ -307,29 +307,35 @@ elif option == "16 Features":
         # Scaling input values
         try:
             # Transform using the scalers
-        scaled_minmax_16 = minmax_scaler_16.transform([inputs_minmax_16])
-        scaled_standard_16 = standard_scaler_16.transform([inputs_standard_16])
+            scaled_minmax_16 = minmax_scaler_16.transform([inputs_minmax_16])
+            scaled_standard_16 = standard_scaler_16.transform([inputs_standard_16])
 
-        # Concatenate scaled features
-        combined_inputs_16 = np.concatenate([scaled_minmax_16, scaled_standard_16], axis=1)
+            # Concatenate scaled features
+            combined_inputs_16 = np.concatenate([scaled_minmax_16, scaled_standard_16], axis=1)
 
-        # Predict
-        if st.button("Predict"):
-            try:
-                prediction_16 = model_16_features.predict(combined_inputs_16)
-                st.write(f"Prediction: {prediction_16[0]}")
-            except catboost.CatBoostError as e:
-                st.error(f"An error occurred during prediction: {e}")
-    except ValueError as e:
-        st.error(f"Error in scaling: {e}")
-if uploaded_file is not None:
-    image = Image.open(uploaded_file)
-    st.image(image, caption="Uploaded Image", use_column_width=True)
+            # Predict
+            if st.button("Predict"):
+                try:
+                    prediction_16 = model_16_features.predict(combined_inputs_16)
+                    st.write(f"Prediction: {prediction_16[0]}")
+                except catboost.CatBoostError as e:
+                    st.error(f"An error occurred during prediction: {e}")
+                    st.write("Please check if the input features are correct and try again.")
+        except ValueError as e:
+            st.error(f"Error in scaling: {e}")
 
-    # Perform image classification with YOLO model
-    if st.button("Classify"):
-        results = image_model(image)
-        results.render()  # Render boxes on the image
-        st.image(results.imgs[0], caption="Classified Image", use_column_width=True)
-        st.write(f"Detected pistachio type: {results.names[results.pred[0][5].item()]}")
+elif option == "Image Classification":
+    st.subheader("Upload an image for classification")
+    
+    uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
+    
+    if uploaded_file is not None:
+        image = Image.open(uploaded_file)
+        st.image(image, caption="Uploaded Image", use_column_width=True)
 
+        # Perform image classification with YOLO model
+        if st.button("Classify"):
+            results = image_model(image)
+            results.render()  # Render boxes on the image
+            st.image(results.imgs[0], caption="Classified Image", use_column_width=True)
+            st.write(f"Detected pistachio type: {results.names[results.pred[0][5].item()]}")
