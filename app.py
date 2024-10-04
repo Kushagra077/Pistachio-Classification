@@ -326,19 +326,36 @@ elif option == "16 Features":
 
 elif option == "Image Classification":
     st.subheader("Upload an image for classification")
+    st.write("Upload an image to classify the pistachio type")
     
     uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
-    
-    if uploaded_file is not None:
-        image = Image.open(uploaded_file)
-        st.image(image, caption="Uploaded Image", use_column_width=True)
 
-        if st.button("Classify"):
-            results = image_model(image)  # Indented to be part of the if block
-            if results:  # Check if results are not empty
-                for result in results:  # Ensure this line is also indented
-                    result.render()  # Render boxes on the image
-                    st.image(result.imgs[0], caption="Classified Image", use_column_width=True)
-                    st.write(f"Detected pistachio type: {result.names[result.pred[0][5].item()]}")
-            else:
-                st.write("No objects detected.")
+    if uploaded_file is not None:
+        try:
+            # Load the uploaded image
+            image = Image.open(uploaded_file)
+            # Display the image
+            st.image(image, caption='Uploaded Image', use_column_width=True)
+            
+            st.write("Results")
+            
+            # Perform classification
+            results = image_model.predict(image)
+            
+            # Get the predicted class probabilities
+            probs = results[0].probs  # Assuming results is a list and the first element contains the probabilities
+            predicted_class_index = probs.top1  # Index of the highest probability
+            predicted_class_confidence = probs.top1conf  # Confidence of the prediction
+            
+            # Retrieve class names from the model's attribute
+            class_names = image_model.names
+            
+            # Get the predicted class name
+            predicted_class_name = class_names[predicted_class_index]
+            
+            # Display the predicted class and confidence
+            st.write(f"Predicted class: {predicted_class_name}")
+            st.write(f"Confidence: {predicted_class_confidence:.2f}")
+        except Exception as e:
+            st.error(f"An error occurred during image classification: {e}")
+            st.write("Please check if the uploaded image is valid and try again.")
