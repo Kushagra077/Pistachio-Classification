@@ -238,7 +238,10 @@ if option == "28 Features":
         st.slider("Skew_RB", -2.5, 2.0, -0.25),
         st.slider("Kurtosis_RR", 1.5, 9.0, 5.25),
         st.slider("Kurtosis_RG", 1.5, 11.0, 6.25),
-        st.slider("Kurtosis_RB", 1.4, 12.0, 6.7)
+        st.slider("Kurtosis_RB", 1.4, 12.0, 6.7),
+        st.slider("Eccentricity", 0.0, 1.0, 0.5),  # Adding missing features
+        st.slider("Extent", 0.0, 1.0, 0.5),       # Adding missing features
+        st.slider("Aspect_Ratio", 1.0, 3.5, 2.25) # Adding missing features
     ]
 
     # Input sliders for standard features (standard_features_28)
