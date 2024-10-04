@@ -213,60 +213,52 @@ option = st.sidebar.selectbox("Choose prediction type", ["16 Features", "28 Feat
 if option == "28 Features":
     st.subheader("Enter values for 28 features")
 
-    # Define your features and their corresponding ranges
-    feature_ranges = {
-        "Area": (25000, 130000),
-        "Perimeter": (800, 3000),
-        "Major_Axis": (300, 560),
-        "Minor_Axis": (120, 400),
-        "Convex_Area": (35000, 140000),
-        "Solidity": (0.00, 1.00),
-        "Roundness": (0.00, 1.00),
-        "Compactness": (0.00, 1.00),
-        "Shapefactor_1": (0.00, 0.02),
-        "Shapefactor_2": (0.00, 0.01),
-        "Shapefactor_3": (0.00, 1.00),
-        "Shapefactor_4": (0.00, 1.00),
-        "Mean_RR": (150, 250),
-        "Mean_RG": (150, 250),
-        "Mean_RB": (140, 250),
-        "StdDev_RR": (9, 33),
-        "StdDev_RG": (10, 35),
-        "StdDev_RB": (10, 45),
-        "Skew_RR": (-2.00, 2.00),
-        "Skew_RG": (-1.75, 2.50),
-        "Skew_RB": (-2.50, 2.00),
-        "Kurtosis_RR": (1.50, 9.00),
-        "Kurtosis_RG": (1.50, 11.00),
-        "Kurtosis_RB": (1.40, 12.00),
-        "Eccentricity": (0.00, 1.00),
-        "Extent": (0.00, 1.00),
-        "Aspect_Ratio": (1.00, 3.50)
-    }
+    # Create sliders for Min-Max scaling
+    inputs_minmax_28 = [
+        st.slider("AREA (Min-Max)", 25000, 130000, 77500),
+        st.slider("PERIMETER (Min-Max)", 800, 3000, 1900),
+        st.slider("MAJOR_AXIS (Min-Max)", 300, 560, 430),
+        st.slider("MINOR_AXIS (Min-Max)", 120, 400, 260),
+        st.slider("CONVEX_AREA (Min-Max)", 35000, 140000, 87500),
+        st.slider("SOLIDITY (Min-Max)", 0.0, 1.0, 0.5),
+        st.slider("ROUNDNESS (Min-Max)", 0.0, 1.0, 0.5),
+        st.slider("COMPACTNESS (Min-Max)", 0.0, 1.0, 0.5),
+        st.slider("SHAPEFACTOR_1 (Min-Max)", 0.0, 0.02, 0.01),
+        st.slider("SHAPEFACTOR_2 (Min-Max)", 0.0, 0.01, 0.005),
+        st.slider("SHAPEFACTOR_3 (Min-Max)", 0.0, 1.0, 0.5),
+        st.slider("SHAPEFACTOR_4 (Min-Max)", 0.0, 1.0, 0.5),
+        st.slider("MEAN_RR (Min-Max)", 150, 250, 200),
+        st.slider("MEAN_RG (Min-Max)", 150, 250, 200),
+        st.slider("MEAN_RB (Min-Max)", 140, 250, 195),
+        st.slider("STDDEV_RR (Min-Max)", 9, 33, 21),
+        st.slider("STDDEV_RG (Min-Max)", 10, 35, 22.5),
+        st.slider("STDDEV_RB (Min-Max)", 10, 45, 27.5),
+        st.slider("SKEW_RR (Min-Max)", -2.0, 2.0, 0.0),
+        st.slider("SKEW_RG (Min-Max)", -1.75, 2.5, 0.375),
+        st.slider("SKEW_RB (Min-Max)", -2.5, 2.0, -0.25),
+        st.slider("KURTOSIS_RR (Min-Max)", 1.5, 9.0, 5.25),
+        st.slider("KURTOSIS_RG (Min-Max)", 1.5, 11.0, 6.25),
+        st.slider("KURTOSIS_RB (Min-Max)", 1.4, 12.0, 6.7),
+        st.slider("ECCENTRICITY (Min-Max)", 0.0, 1.0, 0.5),
+        st.slider("EXTENT (Min-Max)", 0.0, 1.0, 0.5),
+        st.slider("ASPECT_RATIO (Min-Max)", 1.0, 3.5, 2.25)
+    ]
 
-    # Create sliders for each feature
-    inputs = {}
-    for feature, (min_val, max_val) in feature_ranges.items():
-        inputs[feature] = st.slider(feature, float(min_val), float(max_val), float((min_val + max_val) / 2))
+    # Create sliders for Standard scaling (Only the relevant features)
+    inputs_standard_28 = [
+        st.slider("Eccentricity (Standard)", 0.0, 1.0, 0.5),
+        st.slider("Extent (Standard)", 0.0, 1.0, 0.5),
+        st.slider("Aspect Ratio (Standard)", 1.0, 3.5, 2.25)
+    ]
 
-    # Convert input to a list for scaling
-    input_values = list(inputs.values())
-
-    # Debugging: Print the inputs
-    st.write("Feature Inputs:", inputs)
-
-    # Ensure the inputs are valid
-    if len(input_values) != len(feature_ranges):
+    # Ensure the lengths match expected counts
+    if len(inputs_minmax_28) != len(minmax_features_28) or len(inputs_standard_28) != len(standard_features_28):
         st.error("Mismatch in the number of features. Please ensure all features are correctly set.")
     else:
         try:
-            # Transform using the scalers (make sure your scalers were trained on the same number of features)
-            scaled_minmax = minmax_scaler_28.transform([input_values])  # Assuming minmax_scaler expects same features
-            scaled_standard = standard_scaler_28.transform([input_values])  # Same here
-
-            # Debugging: Check shapes of the scaled features
-            st.write("Scaled MinMax:", scaled_minmax)
-            st.write("Scaled Standard:", scaled_standard)
+            # Transform using the scalers
+            scaled_minmax = minmax_scaler_28.transform([inputs_minmax_28])
+            scaled_standard = standard_scaler_28.transform([inputs_standard_28])
 
             # Concatenate scaled features
             combined_inputs_28 = np.concatenate([scaled_minmax, scaled_standard], axis=1)
