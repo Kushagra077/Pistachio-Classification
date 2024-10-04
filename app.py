@@ -249,17 +249,24 @@ if option == "28 Features":
     for feature, (min_val, max_val) in feature_ranges.items():
         inputs[feature] = st.slider(feature, float(min_val), float(max_val), float((min_val + max_val) / 2))
 
+    # Convert input to a list for scaling
+    input_values = list(inputs.values())
+
     # Debugging: Print the inputs
     st.write("Feature Inputs:", inputs)
 
     # Ensure the inputs are valid
-    if len(inputs) != len(feature_ranges):
+    if len(input_values) != len(feature_ranges):
         st.error("Mismatch in the number of features. Please ensure all features are correctly set.")
     else:
         try:
-            # Transform using the scalers (assuming you have the scalers defined)
-            scaled_minmax = minmax_scaler_28.transform([list(inputs.values())])  # Adjust based on your scaler's expected input shape
-            scaled_standard = standard_scaler_28.transform([list(inputs.values())])  # Adjust as needed
+            # Transform using the scalers (make sure your scalers were trained on the same number of features)
+            scaled_minmax = minmax_scaler_28.transform([input_values])  # Assuming minmax_scaler expects same features
+            scaled_standard = standard_scaler_28.transform([input_values])  # Same here
+
+            # Debugging: Check shapes of the scaled features
+            st.write("Scaled MinMax:", scaled_minmax)
+            st.write("Scaled Standard:", scaled_standard)
 
             # Concatenate scaled features
             combined_inputs_28 = np.concatenate([scaled_minmax, scaled_standard], axis=1)
