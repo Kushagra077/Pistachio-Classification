@@ -213,53 +213,67 @@ option = st.sidebar.selectbox("Choose prediction type", ["16 Features", "28 Feat
 if option == "28 Features":
     st.subheader("Enter values for 28 features")
 
-    # Define your features and ranges
-    features = [
-        "Area", "Perimeter", "Major_Axis", "Minor_Axis", "Convex_Area",
-        "Solidity", "Roundness", "Compactness", "Shapefactor_1", 
-        "Shapefactor_2", "Shapefactor_3", "Shapefactor_4", "Mean_RR",
-        "Mean_RG", "Mean_RB", "StdDev_RR", "StdDev_RG", "StdDev_RB",
-        "Skew_RR", "Skew_RG", "Skew_RB", "Kurtosis_RR", "Kurtosis_RG",
-        "Kurtosis_RB", "Eccentricity", "Extent", "Aspect_Ratio"
-    ]
+    # Define your features and their corresponding ranges
+    feature_ranges = {
+        "Area": (25000, 130000),
+        "Perimeter": (800, 3000),
+        "Major_Axis": (300, 560),
+        "Minor_Axis": (120, 400),
+        "Convex_Area": (35000, 140000),
+        "Solidity": (0.00, 1.00),
+        "Roundness": (0.00, 1.00),
+        "Compactness": (0.00, 1.00),
+        "Shapefactor_1": (0.00, 0.02),
+        "Shapefactor_2": (0.00, 0.01),
+        "Shapefactor_3": (0.00, 1.00),
+        "Shapefactor_4": (0.00, 1.00),
+        "Mean_RR": (150, 250),
+        "Mean_RG": (150, 250),
+        "Mean_RB": (140, 250),
+        "StdDev_RR": (9, 33),
+        "StdDev_RG": (10, 35),
+        "StdDev_RB": (10, 45),
+        "Skew_RR": (-2.00, 2.00),
+        "Skew_RG": (-1.75, 2.50),
+        "Skew_RB": (-2.50, 2.00),
+        "Kurtosis_RR": (1.50, 9.00),
+        "Kurtosis_RG": (1.50, 11.00),
+        "Kurtosis_RB": (1.40, 12.00),
+        "Eccentricity": (0.00, 1.00),
+        "Extent": (0.00, 1.00),
+        "Aspect_Ratio": (1.00, 3.50)
+    }
 
-    ranges = [
-        (25000, 130000), (800, 3000), (300, 560), (120, 400), (35000, 140000),
-        (0.00, 1.00), (0.00, 1.00), (0.00, 1.00), (0.00, 0.02),
-        (0.00, 0.01), (0.00, 1.00), (0.00, 1.00), (150, 250), (150, 250),
-        (140, 250), (9, 33), (10, 35), (10, 45), (-2.00, 2.00), 
-        (-1.75, 2.50), (-2.50, 2.00), (1.50, 9.00), (1.50, 11.00),
-        (1.40, 12.00), (0.00, 1.00), (0.00, 1.00), (1.00, 3.50)
-    ]
+    # Create sliders for each feature
+    inputs = {}
+    for feature, (min_val, max_val) in feature_ranges.items():
+        inputs[feature] = st.slider(feature, float(min_val), float(max_val), float((min_val + max_val) / 2))
 
-    # Create sliders for Min-Max scaling
-    inputs_minmax = []
-    for index, (feature, (min_val, max_val)) in enumerate(zip(features, ranges)):
-        value = st.slider(f"{feature} (Min-Max)", min_value=float(min_val), max_value=float(max_val), value=float((min_val + max_val) / 2))
-        inputs_minmax.append(value)
+    # Debugging: Print the inputs
+    st.write("Feature Inputs:", inputs)
 
-    # Only scale relevant features for Standard scaling
-    inputs_standard = []
-    for index, (feature, (min_val, max_val)) in enumerate(zip(features[:3], ranges[:3])):  # Assuming first 3 features for standard scaling
-        value = st.slider(f"{feature} (Standard)", min_value=float(min_val), max_value=float(max_val), value=float((min_val + max_val) / 2))
-        inputs_standard.append(value)
-
-    # Ensure the lengths match expected counts
-    if len(inputs_minmax) != len(features) or len(inputs_standard) != 3:  # Expecting only 3 for standard
+    # Ensure the inputs are valid
+    if len(inputs) != len(feature_ranges):
         st.error("Mismatch in the number of features. Please ensure all features are correctly set.")
     else:
         try:
-            # Transform using the scalers
-            scaled_minmax = minmax_scaler_28.transform([inputs_minmax])
-            scaled_standard = standard_scaler_28.transform([inputs_standard])
+            # Transform using the scalers (assuming you have the scalers defined)
+            scaled_minmax = minmax_scaler_28.transform([list(inputs.values())])  # Adjust based on your scaler's expected input shape
+            scaled_standard = standard_scaler_28.transform([list(inputs.values())])  # Adjust as needed
 
             # Concatenate scaled features
-            combined_inputs_28 = np.concatenate([scaled_minmax, scaled_standard])
-            
-            # Proceed with prediction or further processing
-            st.success("Features successfully scaled and combined!")
-        except Exception as e:
-            st.error(f"An error occurred during scaling: {str(e)}")
+            combined_inputs_28 = np.concatenate([scaled_minmax, scaled_standard], axis=1)
+
+            # Predict
+            if st.button("Predict"):
+                try:
+                    prediction_28 = model_28_features.predict(combined_inputs_28)
+                    st.write(f"Prediction: {prediction_28[0]}")
+                except catboost.CatBoostError as e:
+                    st.error(f"An error occurred during prediction: {e}")
+                    st.write("Please check if the input features are correct and try again.")
+        except ValueError as e:
+            st.error(f"Error in scaling: {e}")
 
 elif option == "16 Features":
     st.subheader("Enter values for 16 features")
