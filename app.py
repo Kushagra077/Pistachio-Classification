@@ -215,40 +215,40 @@ if option == "28 Features":
 
     # Create sliders for Min-Max scaling
     inputs_minmax_28 = [
-        st.slider("AREA (Min-Max)", min_value=25000, max_value=130000, value=77500, step=1),
-        st.slider("PERIMETER (Min-Max)", min_value=800, max_value=3000, value=1900, step=1),
-        st.slider("MAJOR_AXIS (Min-Max)", min_value=300, max_value=560, value=430, step=1),
-        st.slider("MINOR_AXIS (Min-Max)", min_value=120, max_value=400, value=260, step=1),
-        st.slider("CONVEX_AREA (Min-Max)", min_value=35000, max_value=140000, value=87500, step=1),
-        st.slider("SOLIDITY (Min-Max)", min_value=0, max_value=1, value=0, step=1),
-        st.slider("ROUNDNESS (Min-Max)", min_value=0, max_value=1, value=0, step=1),
-        st.slider("COMPACTNESS (Min-Max)", min_value=0, max_value=1, value=0, step=1),
-        st.slider("SHAPEFACTOR_1 (Min-Max)", min_value=0, max_value=2, value=1, step=1),
-        st.slider("SHAPEFACTOR_2 (Min-Max)", min_value=0, max_value=1, value=0, step=1),
-        st.slider("SHAPEFACTOR_3 (Min-Max)", min_value=0, max_value=1, value=0, step=1),
-        st.slider("SHAPEFACTOR_4 (Min-Max)", min_value=0, max_value=1, value=0, step=1),
-        st.slider("MEAN_RR (Min-Max)", min_value=150, max_value=250, value=200, step=1),
-        st.slider("MEAN_RG (Min-Max)", min_value=150, max_value=250, value=200, step=1),
-        st.slider("MEAN_RB (Min-Max)", min_value=140, max_value=250, value=195, step=1),
-        st.slider("STDDEV_RR (Min-Max)", min_value=9, max_value=33, value=21, step=1),
-        st.slider("STDDEV_RG (Min-Max)", min_value=10, max_value=35, value=22, step=1),
-        st.slider("STDDEV_RB (Min-Max)", min_value=10, max_value=45, value=27, step=1),
-        st.slider("SKEW_RR (Min-Max)", min_value=-2, max_value=2, value=0, step=1),
-        st.slider("SKEW_RG (Min-Max)", min_value=-2, max_value=3, value=0, step=1),
-        st.slider("SKEW_RB (Min-Max)", min_value=-3, max_value=2, value=0, step=1),
-        st.slider("KURTOSIS_RR (Min-Max)", min_value=1, max_value=9, value=5, step=1),
-        st.slider("KURTOSIS_RG (Min-Max)", min_value=1, max_value=11, value=6, step=1),
-        st.slider("KURTOSIS_RB (Min-Max)", min_value=1, max_value=12, value=7, step=1),
-        st.slider("ECCENTRICITY (Min-Max)", min_value=0, max_value=1, value=0, step=1),
-        st.slider("EXTENT (Min-Max)", min_value=0, max_value=1, value=0, step=1),
-        st.slider("ASPECT_RATIO (Min-Max)", min_value=1, max_value=4, value=2, step=1)
+        st.slider("AREA (Min-Max)", min_value=25000.0, max_value=130000.0, value=77500.0, step=0.1),
+        st.slider("PERIMETER (Min-Max)", min_value=800.0, max_value=3000.0, value=1900.0, step=0.1),
+        st.slider("MAJOR_AXIS (Min-Max)", min_value=300.0, max_value=560.0, value=430.0, step=0.1),
+        st.slider("MINOR_AXIS (Min-Max)", min_value=120.0, max_value=400.0, value=260.0, step=0.1),
+        st.slider("CONVEX_AREA (Min-Max)", min_value=35000.0, max_value=140000.0, value=87500.0, step=0.1),
+        st.slider("SOLIDITY (Min-Max)", min_value=0.0, max_value=1.0, value=0.5, step=0.1),
+        st.slider("ROUNDNESS (Min-Max)", min_value=0.0, max_value=1.0, value=0.5, step=0.1),
+        st.slider("COMPACTNESS (Min-Max)", min_value=0.0, max_value=1.0, value=0.5, step=0.1),
+        st.slider("SHAPEFACTOR_1 (Min-Max)", min_value=0.0, max_value=0.02, value=0.01, step=0.001),
+        st.slider("SHAPEFACTOR_2 (Min-Max)", min_value=0.0, max_value=0.01, value=0.005, step=0.001),
+        st.slider("SHAPEFACTOR_3 (Min-Max)", min_value=0.0, max_value=1.0, value=0.5, step=0.1),
+        st.slider("SHAPEFACTOR_4 (Min-Max)", min_value=0.0, max_value=1.0, value=0.5, step=0.1),
+        st.slider("MEAN_RR (Min-Max)", min_value=150.0, max_value=250.0, value=200.0, step=0.1),
+        st.slider("MEAN_RG (Min-Max)", min_value=150.0, max_value=250.0, value=200.0, step=0.1),
+        st.slider("MEAN_RB (Min-Max)", min_value=140.0, max_value=250.0, value=195.0, step=0.1),
+        st.slider("STDDEV_RR (Min-Max)", min_value=9.0, max_value=33.0, value=21.0, step=0.1),
+        st.slider("STDDEV_RG (Min-Max)", min_value=10.0, max_value=35.0, value=22.5, step=0.1),
+        st.slider("STDDEV_RB (Min-Max)", min_value=10.0, max_value=45.0, value=27.5, step=0.1),
+        st.slider("SKEW_RR (Min-Max)", min_value=-2.0, max_value=2.0, value=0.0, step=0.1),
+        st.slider("SKEW_RG (Min-Max)", min_value=-1.75, max_value=2.5, value=0.375, step=0.1),
+        st.slider("SKEW_RB (Min-Max)", min_value=-2.5, max_value=2.0, value=-0.25, step=0.1),
+        st.slider("KURTOSIS_RR (Min-Max)", min_value=1.5, max_value=9.0, value=5.25, step=0.1),
+        st.slider("KURTOSIS_RG (Min-Max)", min_value=1.5, max_value=11.0, value=6.25, step=0.1),
+        st.slider("KURTOSIS_RB (Min-Max)", min_value=1.4, max_value=12.0, value=6.7, step=0.1),
+        st.slider("ECCENTRICITY (Min-Max)", min_value=0.0, max_value=1.0, value=0.5, step=0.1),
+        st.slider("EXTENT (Min-Max)", min_value=0.0, max_value=1.0, value=0.5, step=0.1),
+        st.slider("ASPECT_RATIO (Min-Max)", min_value=1.0, max_value=4.0, value=2.25, step=0.1)
     ]
 
     # Create sliders for Standard scaling (Only the relevant features)
     inputs_standard_28 = [
-        st.slider("Eccentricity (Standard)", min_value=0, max_value=1, value=0, step=1),
-        st.slider("Extent (Standard)", min_value=0, max_value=1, value=0, step=1),
-        st.slider("Aspect Ratio (Standard)", min_value=1, max_value=4, value=2, step=1)
+        st.slider("Eccentricity (Standard)", min_value=0.0, max_value=1.0, value=0.5, step=0.1),
+        st.slider("Extent (Standard)", min_value=0.0, max_value=1.0, value=0.5, step=0.1),
+        st.slider("Aspect Ratio (Standard)", min_value=1.0, max_value=4.0, value=2.25, step=0.1)
     ]
 
     # Ensure the lengths match expected counts
