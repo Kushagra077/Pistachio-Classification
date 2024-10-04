@@ -246,7 +246,6 @@ if option == "28 Features":
         st.slider("Extent", 0.0, 1.0, 0.5),
         st.slider("Aspect_Ratio", 1.0, 3.5, 2.25)
     ]
-
     # Set a fixed value for Kurtosis_RB
     inputs_minmax[minmax_features_28.index('Kurtosis_RB')] = 0.0  # Setting default value
 
