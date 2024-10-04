@@ -231,7 +231,7 @@ if option == "28 Features":
         st.slider("Mean_RG", 150, 250, 200),
         st.slider("Mean_RB", 140, 250, 195),
         st.slider("StdDev_RR", 9, 33, 21),
-        st.slider("StdDev_RG", 10, 35, 22.5),
+        st.slider("StdDev_RG", 10, 35, 22),
         st.slider("StdDev_RB", 10, 45, 27.5),
         st.slider("Skew_RR", -2.0, 2.0, 0.0),
         st.slider("Skew_RG", -1.75, 2.5, 0.375),
@@ -335,7 +335,12 @@ elif option == "Image Classification":
 
         # Perform image classification with YOLO model
         if st.button("Classify"):
-            results = image_model(image)
-            results.render()  # Render boxes on the image
-            st.image(results.imgs[0], caption="Classified Image", use_column_width=True)
-            st.write(f"Detected pistachio type: {results.names[results.pred[0][5].item()]}")
+    results = image_model(image)
+    if results:  # Check if results are not empty
+        # Assuming results is a list of detections
+        for result in results:
+            result.render()  # Render boxes on the image
+            st.image(result.imgs[0], caption="Classified Image", use_column_width=True)
+            st.write(f"Detected pistachio type: {result.names[result.pred[0][5].item()]}")
+    else:
+        st.write("No objects detected.")
