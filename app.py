@@ -213,49 +213,34 @@ option = st.sidebar.selectbox("Choose prediction type", ["16 Features", "28 Feat
 if option == "28 Features":
     st.subheader("Enter values for 28 features")
 
-    # Input sliders for the 28 features (minmax_features_28)
-    inputs_minmax = [
-        st.slider("Area", 25000, 130000, 77500),
-        st.slider("Perimeter", 800, 3000, 1900),
-        st.slider("Major_Axis", 300, 560, 430),
-        st.slider("Minor_Axis", 120, 400, 260),
-        st.slider("Convex_Area", 35000, 140000, 87500),
-        st.slider("Solidity", 0.0, 1.0, 0.5),
-        st.slider("Roundness", 0.0, 1.0, 0.5),
-        st.slider("Compactness", 0.0, 1.0, 0.5),
-        st.slider("Shapefactor_1", 0.0, 0.02, 0.01),
-        st.slider("Shapefactor_2", 0.0, 0.01, 0.005),
-        st.slider("Shapefactor_3", 0.0, 1.0, 0.5),
-        st.slider("Shapefactor_4", 0.0, 1.0, 0.5),
-        st.slider("Mean_RR", 150, 250, 200),
-        st.slider("Mean_RG", 150, 250, 200),
-        st.slider("Mean_RB", 140, 250, 195),
-        st.slider("StdDev_RR", 9, 33, 21),
-        st.slider("StdDev_RG", 10, 35, 22),
-        st.slider("StdDev_RB", 10, 45, 28),
-        st.slider("Skew_RR", -2.0, 2.0, 0.0),
-        st.slider("Skew_RG", -1.75, 2.5, 0.375),
-        st.slider("Skew_RB", -2.5, 2.0, -0.25),
-        st.slider("Kurtosis_RR", 1.5, 9.0, 5.25),
-        st.slider("Kurtosis_RG", 1.5, 11.0, 6.25),
-        st.slider("Kurtosis_RB", 1.4, 12.0, 6.7),
-        st.slider("Eccentricity", 0.0, 1.0, 0.5),  # Adding missing features
-        st.slider("Extent", 0.0, 1.0, 0.5),       # Adding missing features
-        st.slider("Aspect_Ratio", 1.0, 3.5, 2.25) # Adding missing features
+    # Define your features
+    features = [
+        "Area", "Perimeter", "Major_Axis", "Minor_Axis", "Convex_Area",
+        "Solidity", "Roundness", "Compactness", "Shapefactor_1", 
+        "Shapefactor_2", "Shapefactor_3", "Shapefactor_4", "Mean_RR",
+        "Mean_RG", "Mean_RB", "StdDev_RR", "StdDev_RG", "StdDev_RB",
+        "Skew_RR", "Skew_RG", "Skew_RB", "Kurtosis_RR", "Kurtosis_RG",
+        "Kurtosis_RB", "Eccentricity", "Extent", "Aspect_Ratio"
     ]
 
-    # Input sliders for standard features (standard_features_28)
-    inputs_standard = [
-        st.slider("Eccentricity", 0.0, 1.0, 0.5),
-        st.slider("Extent", 0.0, 1.0, 0.5),
-        st.slider("Aspect_Ratio", 1.0, 3.5, 2.25)
+    # Define min-max ranges for each feature (update ranges as needed)
+    ranges = [
+        (25000, 130000), (800, 3000), (300, 560), (120, 400), (35000, 140000),
+        (0.00, 1.00), (0.00, 1.00), (0.00, 1.00), (0.00, 0.02),
+        (0.00, 0.01), (0.00, 1.00), (0.00, 1.00), (150, 250), (150, 250),
+        (140, 250), (9, 33), (10, 35), (10, 45), (-2.00, 2.00), 
+        (-1.75, 2.50), (-2.50, 2.00), (1.50, 9.00), (1.50, 11.00),
+        (1.40, 12.00), (0.00, 1.00), (0.00, 1.00), (1.00, 3.50)
     ]
+
+    # Create sliders with unique labels
+    inputs_minmax = []
+    for index, (feature, (min_val, max_val)) in enumerate(zip(features, ranges)):
+        value = st.slider(f"{feature} ({index})", min_val, max_val, (min_val + max_val) / 2)
+        inputs_minmax.append(value)
 
     # Ensure the lengths match expected counts
-    st.write(f"Length of inputs_minmax: {len(inputs_minmax)} (Expected: {len(minmax_features_28)})")
-    st.write(f"Length of inputs_standard: {len(inputs_standard)} (Expected: {len(standard_features_28)})")
-
-    if len(inputs_minmax) != len(minmax_features_28) or len(inputs_standard) != len(standard_features_28):
+    if len(inputs_minmax) != len(features):
         st.error("Mismatch in the number of features. Please ensure all features are correctly set.")
     else:
         # Scaling input values
